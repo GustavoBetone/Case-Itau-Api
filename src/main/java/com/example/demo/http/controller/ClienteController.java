@@ -1,11 +1,11 @@
 package com.example.demo.http.controller;
 
 import com.example.demo.entity.Cliente;
-import com.example.demo.service.ClienteService;
+import com.example.demo.http.controller.dto.filtro.ClienteFiltro;
+import com.example.demo.service.impl.ClienteServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class ClienteController {
 
     @Autowired
-    private ClienteService clienteService;
+    private ClienteServiceImpl clienteServiceImpl;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -25,19 +25,19 @@ public class ClienteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente salvar(@RequestBody Cliente cliente){
-        return clienteService.salvar(cliente);
+        return clienteServiceImpl.salvar(cliente);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Cliente> listaCliente(){
-        return clienteService.listaCliente();
+    public List<Cliente> listaCliente(ClienteFiltro clienteFiltro){
+        return clienteServiceImpl.listaCliente(clienteFiltro);
     }
 
     @GetMapping("/{numconta}")
     @ResponseStatus(HttpStatus.OK)
     public Cliente buscarClientePorNumConta(@PathVariable("numconta")String numconta) {
-            return clienteService.buscarPorNumConta(numconta)
+            return clienteServiceImpl.buscarPorNumConta(numconta)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente nao encontrado"));
     }
 
@@ -45,16 +45,16 @@ public class ClienteController {
     @DeleteMapping("/{numconta}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removerClientePorNumConta(@PathVariable("numconta")String numconta){
-        clienteService.buscarPorNumConta(numconta)
+        clienteServiceImpl.buscarPorNumConta(numconta)
                 .map(cliente -> {
-                    clienteService.removerPorNumConta(cliente.getNumconta());
+                    clienteServiceImpl.removerPorNumConta(cliente.getNumconta());
                     return Void.TYPE;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente nao encontrado"));
     }
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarCliente(@PathVariable("numconta")String numconta,@RequestBody Cliente cliente){
-        clienteService.buscarPorNumConta(numconta)
+        clienteServiceImpl.buscarPorNumConta(numconta)
                 .map(clienteBase ->{
                     modelMapper.map(cliente, clienteBase);
                     return Void.TYPE;

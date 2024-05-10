@@ -1,35 +1,21 @@
 package com.example.demo.service;
 
-
 import com.example.demo.entity.Cliente;
-import com.example.demo.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.demo.http.controller.dto.filtro.ClienteFiltro;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ClienteService {
+public interface ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
 
-    public Cliente salvar(Cliente cliente){
-        return clienteRepository.save(cliente);
-    }
+     Cliente salvar(Cliente cliente);
 
-    public List<Cliente> listaCliente(){
-        return clienteRepository.findAll();
-    }
+     List<Cliente> listaCliente(ClienteFiltro clienteFiltro);
 
-    public Optional<Cliente> buscarPorNumConta(String numconta){
-        return clienteRepository.findById(numconta);
-    }
+     Optional<Cliente> buscarPorNumConta(String numconta);
 
-    public void removerPorNumConta(String numconta){
-        clienteRepository.deleteById(numconta);
-    }
+     void removerPorNumConta(String numconta);
 
 
 }
